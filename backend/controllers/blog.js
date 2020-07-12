@@ -1,4 +1,5 @@
 
+
 const Blog = require('../models/blog');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
@@ -8,6 +9,7 @@ const stripHtml = require('string-strip-html');
 const _ = require('lodash');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 const fs = require('fs');
+const { smartTrim } = require('../helpers/blog');
 
 exports.create = (req, res) => {
     let form = new formidable.IncomingForm();
@@ -48,6 +50,7 @@ exports.create = (req, res) => {
         let blog = new Blog();
         blog.title = title;
         blog.body = body;
+        blog.excerpt = smartTrim(body, 320, ' ', ' ...');
         blog.slug = slugify(title).toLowerCase();
         blog.mtitle = `${title} | ${process.env.APP_NAME}`;
         blog.mdesc = stripHtml(body.substring(0, 160));
